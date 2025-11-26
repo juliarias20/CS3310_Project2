@@ -10,6 +10,9 @@ def DijkstraSP(graph,weight, start):
         dist[v] = weight.get((start,v),float('inf'))
         prev[v] = start
         mark[v] = 0
+
+    dist[start] = 0
+    prev[start] = None
     mark[start] = 1
     # loop n - 1 times
     for i in range(len(graph) - 1):
