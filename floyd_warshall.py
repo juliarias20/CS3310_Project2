@@ -33,15 +33,11 @@ def FloydWarshall(graph, weight):
 
 if __name__ == "__main__":
 
-    #Generate random matrix of weights 
-    n = random.randint(1,100)
-    
-
     graph = nx.DiGraph()
 
     # Generate random matrix of weighted edges (node1, node2, weight)
 
-    
+
     # Add edges using function add_weighted_edges_from
     graph.add_weighted_edges_from() #weight matrix
     
