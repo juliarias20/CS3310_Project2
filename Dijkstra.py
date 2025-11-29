@@ -164,7 +164,7 @@ if __name__ == "__main__":
         print()
 
     # This is the runtime part of the assignment
-     n_values = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 150, 170, 200]
+     n_values = [20, 40, 60, 80, 100, 120, 140, 160, 180, 200]
 
     # Sparse graphs: the 0.2 means that only 20% of possible edges exist
     time_repeated_dijkstra(n_values, edge_prob=0.2, runs_per_n=5)
