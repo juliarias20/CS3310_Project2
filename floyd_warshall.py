@@ -1,5 +1,6 @@
 import networkx as nx
 import random
+from Dijkstra import build_example_graph, build_weight_dict
 
 def FloydWarshall(graph, weight):
 
@@ -31,16 +32,18 @@ def FloydWarshall(graph, weight):
 
     return distance
 
-if __name__ == "__main__":
 
-    graph = nx.DiGraph()
+# if __name__ == "__main__":
+#     # this is to test the example graph
+#     G = build_example_graph()
+#     weight - build_weight_dict(6)
+#     graph = nx.DiGraph()
 
-    # Generate random matrix of weighted edges (node1, node2, weight)
+#     # Generate random matrix of weighted edges (node1, node2, weight)
 
 
-    # Add edges using function add_weighted_edges_from
-    graph.add_weighted_edges_from() #weight matrix
+#     # Add edges using function add_weighted_edges_from
+#     graph.add_weighted_edges_from() #weight matrix
     
-    FloydWarshall(graph, x) #weight matrix
+#     FloydWarshall(graph, x) #weight matrix
 
-                  
