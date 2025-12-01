@@ -5,34 +5,17 @@ import time
 
 def FloydWarshall(graph, weight):
 
-    """
-    Pseudocode (from lecture slides):
-        for u = 1 to n do:
-
-            Array D0, for every u,v = weight(u,v)
-        for k = 1 to n do:
-            for u = 1 to n do:
-                for v = 1 to n do:
-                    Array Dk = min(Dk-1, Dk-1 from u to k + Dk-1 from k to v)
-        
-        return Dk 
-    """
+    #Organized nodes to integer list of node_index
     nodes = list(graph.nodes())
     node_index = {nodes[i]: i for i in range(len(nodes))}
     n = len(nodes)
 
-    # Remap weights
-    weight_mapped = {(node_index[u], node_index[v]): w for (u, v), w in weight.items()}
+    #Initialize distance matrix of size n x n and set all values to infinity
+    distance = [[float('inf')] * len(graph) for _ in range(len(graph))]
 
-    distance = [[float('inf')] * n for _ in range(n)]
-
-    #Base case
-    for i in range(n):
-        distance[i][i] = 0
-
-    #For each distance, map it to a specific weight
-    for (u, v), w in weight_mapped.items():
-        distance[u][v] = w
+    #Fill in edge weights using the node_index
+    for (u, v), w in weight.items():
+        distance[node_index[u]][node_index[v]] = w
 
     #Recursion function
     for k in range(n):
@@ -68,7 +51,6 @@ if __name__ == "__main__":
     print("Floyd-Warshall all-pairs shortest path distances (example graph):")
 
     distance_matrix, node_index = FloydWarshall(G, weight)
-    #inv_idx = {v:k for k,v in node_index.items()}
 
     # Print the distances between each node based on the source
     for u in node_index:
