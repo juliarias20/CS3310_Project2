@@ -1,6 +1,6 @@
 import networkx as nx
 import random
-from Dijkstra import build_example_graph, generate_random_connected_graph
+from Dijkstra import build_example_graph, generate_random_connected_graph, build_weight_dict
 import time
 
 def FloydWarshall(graph, weight):
@@ -17,21 +17,30 @@ def FloydWarshall(graph, weight):
         
         return Dk 
     """
+    nodes = list(graph.nodes())
+    node_index = {nodes[i]: i for i in range(len(nodes))}
+    n = len(nodes)
 
-    distance = [[float('inf')] * len(graph) for _ in range(len(graph))] # Initialize distance matrix of size n x n and set all values to infinity
-    n = len(graph)
+    # Remap weights
+    weight_mapped = {(node_index[u], node_index[v]): w for (u, v), w in weight.items()}
 
-    for u in range(n): # Initialize distance matrix with given weights
-        for v in range(n):
-            distance[u][v] = weight.get((u,v),float('inf'))
+    distance = [[float('inf')] * n for _ in range(n)]
 
-    # Recursion Function 
+    #Base case
+    for i in range(n):
+        distance[i][i] = 0
+
+    #For each distance, map it to a specific weight
+    for (u, v), w in weight_mapped.items():
+        distance[u][v] = w
+
+    #Recursion function
     for k in range(n):
-        for u in range(n):
-            for v in range(n):
-                distance[u][v] = min(distance[u][v], distance[u][k] + distance[k][v])
+        for i in range(n):
+            for j in range(n):
+                distance[i][j] = min(distance[i][j], distance[i][k] + distance[k][j])
 
-    return distance
+    return distance, node_index
 
 def time_repeated_floyd(n_values, edge_prob, runs_per_n=5):
     """
@@ -52,6 +61,27 @@ def time_repeated_floyd(n_values, edge_prob, runs_per_n=5):
         print("{:>5} {:>15.6f}".format(n, avg_time))
 
 if __name__ == "__main__":
+    G = build_example_graph()
+    weight = build_weight_dict(G)
+
+    # Prints the example grpah to prove function correctness
+    print("Floyd-Warshall all-pairs shortest path distances (example graph):")
+
+    distance_matrix, node_index = FloydWarshall(G, weight)
+    #inv_idx = {v:k for k,v in node_index.items()}
+
+    # Print the distances between each node based on the source
+    for u in node_index:
+        print(f"Source {u}:")
+        currentNode = node_index[u]
+        for v in node_index:
+            neighbor = node_index[v]
+            d = distance_matrix[currentNode][neighbor]
+            if d == float('inf'):
+                print(f"  to {v}: unreachable")
+            else:
+                print(f"  to {v}: dist={d}")
+
     print("ASPS using Floyd-Warshall Algorithm:")
     n_values = [20, 40, 60, 80, 100, 120, 140, 160, 180, 200]
 
