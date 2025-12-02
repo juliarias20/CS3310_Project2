@@ -13,7 +13,7 @@ def FloydWarshall(graph, weight):
         for v in nodes:
             distance[u][v] = float('inf')
 
-    # Initialize predecessor matrix (for path reconstruction - extra credit)
+    # Initialize predecessor matrix
     # previous[i][j] = immediate predecessor of j on shortest path from i to j
     previous = {}
     for u in nodes:
