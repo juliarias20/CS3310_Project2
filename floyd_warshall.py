@@ -58,10 +58,7 @@ def FloydWarshall(graph, weight):
 
 
 def reconstruct_path_fw(previous, s, t):
-    """
-    Reconstruct the shortest path from s to t using the predecessor matrix.
-    This is the extra credit part for Floyd-Warshall.
-    """
+  
     if s == t:
         return [s]
 
@@ -76,7 +73,7 @@ def reconstruct_path_fw(previous, s, t):
         current = previous[s][current]
 
     if current is None:
-        return []  # Unreachable (shouldn't happen if previous[s][t] was not None)
+        return [] # Unreachable code, just incase
 
     path.append(s)
     path.reverse()
