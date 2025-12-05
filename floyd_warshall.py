@@ -2,8 +2,15 @@ import networkx as nx
 from Dijkstra import build_example_graph, generate_random_connected_graph, build_weight_dict
 import time
 
+
 def FloydWarshall(graph, weight):
-    # List of nodes
+    """
+    Floyd-Warshall algorithm for all pairs shortest paths --- translated from pseudocode in Dynamic Programming slides
+    
+    This algorithm calculates the shortest path from all pairs, 
+    returning a final shortest distance matrix and a matrix of predecessors
+    """
+    # List of nodes to track the amount
     nodes = list(graph.nodes())
 
     # Initialize distance dictionary with infinities
@@ -13,20 +20,20 @@ def FloydWarshall(graph, weight):
         for v in nodes:
             distance[u][v] = float('inf')
 
+    # For each node, distance to itself is 0
+    for u in nodes:
+        distance[u][u] = 0
+
     # Initialize predecessor matrix
-    # previous[i][j] = immediate predecessor of j on shortest path from i to j
+    # previous[u][v] = immediate predecessor of v on shortest path from u to v
     previous = {}
     for u in nodes:
         previous[u] = {}
         for v in nodes:
             previous[u][v] = None
 
-    # For each node, distance to itself is 0
-    for u in nodes:
-        distance[u][u] = 0
-
     # Initialize distance matrix with given edge weights
-    # Also initialize predecessor: if edge (u,v) exists, predecessor of v is u
+    # Also initialize predecessor ---> if edge (u,v) exists, predecessor of v is u
     for u in nodes:
         for v in nodes:
             if u != v:
@@ -38,7 +45,7 @@ def FloydWarshall(graph, weight):
 
                 distance[u][v] = edge_weight
 
-                # If there is a direct edge, set predecessor
+                # If an edge exists, set the predecessor
                 if edge_weight != float('inf'):
                     previous[u][v] = u
 
@@ -46,9 +53,9 @@ def FloydWarshall(graph, weight):
     for k in nodes:
         for i in nodes:
             for j in nodes:
-                # Check if path through k is shorter
+                # Check if path through k (intermediate node) is shorter
                 new_distance = distance[i][k] + distance[k][j]
-                if new_distance < distance[i][j]:
+                if new_distance < distance[i][j]: # If the distance using k is shorter
                     # Update distance to the shorter path
                     distance[i][j] = new_distance
                     # Predecessor of j on path i->j is same as predecessor of j on path k->j
@@ -58,7 +65,12 @@ def FloydWarshall(graph, weight):
 
 
 def reconstruct_path_fw(previous, s, t):
-  
+    """
+    This algorithm reconstructs the path using the predecessor matrix and select source and target nodes.
+
+    From t to s, if a predecessor exists, add to the path. 
+
+    """
     if s == t:
         return [s]
 
@@ -73,7 +85,7 @@ def reconstruct_path_fw(previous, s, t):
         current = previous[s][current]
 
     if current is None:
-        return [] # Unreachable code, just incase
+        return [] # Unreachable code, just in case
 
     path.append(s)
     path.reverse()
@@ -89,15 +101,21 @@ def time_repeated_floyd(n_values, edge_prob, runs_per_n=5):
     for n in n_values:
         total_time = 0.0
         for _ in range(runs_per_n):
-            G, weight = generate_random_connected_graph(n, edge_prob)
-            start = time.perf_counter()
-            _all_dist, _all_prev = FloydWarshall(G, weight)
-            end = time.perf_counter()
-            total_time += (end - start)
+            G, weight = generate_random_connected_graph(n, edge_prob) # Create random generated grpah based on size 'n' and edge probability
+            
+            start = time.perf_counter() # Start runtime timer
+            _all_dist, _all_prev = FloydWarshall(G, weight) # Obtain distance and predecessor matrix
+            end = time.perf_counter() # End runtime timer
+            
+            total_time += (end - start) # Calculate total time and average time taken to obtain result
         avg_time = total_time / runs_per_n
-        print("{:>5} {:>15.6f}".format(n, avg_time))
+        print("{:>5} {:>15.6f}".format(n, avg_time)) 
 
 if __name__ == "__main__":
+    """
+    Main function --- performs example test and analyzes runtime for sparse/dense graphs of different sizes.
+    
+    """
     G = build_example_graph()
     weight = build_weight_dict(G)
 
